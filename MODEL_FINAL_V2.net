@@ -1,0 +1,222 @@
+net
+{
+    node_size = (80 40);
+    HR_Has_Constraints = "yes";
+    HR_DBN_Num_Slices = "5";
+    HR_Desc = "";
+    HR_OOBN_CheckConsistency = "1";
+    HR_OOBN_FitExpand = "1";
+    HR_Zoom_ZoomFactor = "100";
+    HR_Groups_GroupColors = "";
+    HR_Groups_GroupNames = "";
+    HR_Groups_UserGroupsNo = "0";
+    HR_Utility_Link = "63";
+    HR_Probabilistic_Link = "63";
+    HR_Functional_Link = "63";
+    HR_Binding_Link = "63";
+    HR_Information_Arc = "63";
+    HR_Color_Interface = "21";
+    HR_Color_Instance = "0";
+    HR_Color_DiscreteFunction = "5";
+    HR_Color_Function = "4";
+    HR_Color_Utility = "36";
+    HR_Color_Decision = "17";
+    HR_Color_ContinuousChance = "48";
+    HR_Color_DiscreteChance = "16";
+    HR_Monitor_InitSD = "2";
+    HR_Monitor_Utility_Arrange = "0";
+    HR_Monitor_Variance_Utility = "1";
+    HR_Monitor_Mean_Variance = "1";
+    HR_Monitor_Display_Prob_DD = "0";
+    HR_Monitor_Chance_Utility = "1";
+    HR_Monitor_InitStates = "5";
+    HR_Monitor_OpenGraph = "0";
+    HR_Monitor_GraphPrecision = "100";
+    HR_Monitor_AutoUpdGraph = "0";
+    HR_Compile_MaxMinimalSeparators = "100000";
+    HR_Compile_ApproxEpsilon = "1.0E-5";
+    HR_Compile_Approximate = "0";
+    HR_Compile_SaveToMemory = "0";
+    HR_Compile_Compress = "0";
+    HR_Compile_TriangMethod = "0";
+    HR_Propagate_AutoNormal = "1";
+    HR_Propagate_AutoSum = "1";
+    HR_Propagate_Auto = "1";
+    HR_Font_Italic = "0";
+    HR_Font_Weight = "400";
+    HR_Font_Size = "-12";
+    HR_Font_Name = "javax.swing.plaf.FontUIResource[family=Dialog,name=Dialog,style=bold,size=12]";
+    HR_Grid_GridShow = "0";
+    HR_Grid_GridSnap = "0";
+    HR_Grid_Y = "40";
+    HR_Grid_X = "40";
+}
+
+node Scenario
+{
+    position = (364 50);
+    states = ("S1" "S2" "S3");
+    HR_LinkGroup = "[mimics_opened:0][No_of_alarms:0][Response_time:0][Acknowledgements:0][class:0][Group:0]";
+    HR_LinkMode = "[mimics_opened:0][No_of_alarms:0][Response_time:0][Acknowledgements:0][class:0][Group:0]";
+}
+
+node Error
+{
+    label = "";
+    position = (367 420);
+    states = ("Success" "Failure");
+    HR_Group = "0";
+    HR_Desc = "";
+    HR_State_1 = "";
+    HR_State_0 = "";
+    HR_LinkGroup = "[Group:0][mimics_opened:0][No_of_alarms:0][Response_time:0][Acknowledgements:0][Scenario:0]";
+    HR_LinkMode = "[Group:0][mimics_opened:0][No_of_alarms:0][Response_time:0][Acknowledgements:0][Scenario:0]";
+}
+
+node Acknowledgements
+{
+    position = (188 232);
+    states = ("" "");
+    subtype = interval;
+    state_values = (-infinity 3.5 infinity);
+    HR_LinkGroup = "[Group:0][Response_time:0][No_of_alarms:0][mimics_opened:0]";
+    HR_LinkMode = "[Group:0][Response_time:0][No_of_alarms:0][mimics_opened:0]";
+}
+
+node Response_time
+{
+    position = (620 236);
+    states = ("" "" "");
+    subtype = interval;
+    state_values = (-infinity 716.5 1015.5 infinity);
+    HR_LinkGroup = "[No_of_alarms:0][mimics_opened:0][Group:0]";
+    HR_LinkMode = "[No_of_alarms:0][mimics_opened:0][Group:0]";
+}
+
+node No_of_alarms
+{
+    position = (83 227);
+    states = ("" "");
+    subtype = interval;
+    state_values = (-infinity 15 infinity);
+    HR_LinkGroup = "[mimics_opened:0][Group:0]";
+    HR_LinkMode = "[mimics_opened:0][Group:0]";
+}
+
+node mimics_opened
+{
+    position = (481 232);
+    states = ("" "");
+    subtype = interval;
+    state_values = (-infinity 2.5 infinity);
+    HR_LinkGroup = "[Group:0]";
+    HR_LinkMode = "[Group:0]";
+}
+
+node Group
+{
+    position = (313 231);
+    states = ("Group_1" "Group_2" "Group_3" "Group_4");
+}
+
+potential (Scenario | Error)
+{
+    data
+     = (( 0.454082 0.377551 0.168367 )	%  Error=Success
+	( 0.0131579 0.197368 0.789474 ));	%  Error=Failure
+    experience
+     = ( 196	%  Error=Success
+	 76 );	%  Error=Failure
+}
+
+potential (Error)
+{
+    data = ( 0.720588 0.279412 );
+    experience = 272;
+}
+
+potential (Acknowledgements | Error Scenario)
+{
+    data
+     = ((( 1 0 )	%  Error=Success  Scenario=S1
+	 ( 0.986486 0.0135135 )	%  Error=Success  Scenario=S2
+	 ( 0.484848 0.515152 ))	%  Error=Success  Scenario=S3
+	(( 0 1 )	%  Error=Failure  Scenario=S1
+	 ( 1 0 )	%  Error=Failure  Scenario=S2
+	 ( 0.416667 0.583333 )));	%  Error=Failure  Scenario=S3
+    experience
+     = (( 89	%  Error=Success  Scenario=S1
+	  74	%  Error=Success  Scenario=S2
+	  33 )	%  Error=Success  Scenario=S3
+	( 1	%  Error=Failure  Scenario=S1
+	  15	%  Error=Failure  Scenario=S2
+	  60 ));	%  Error=Failure  Scenario=S3
+}
+
+potential (Response_time | Error Scenario)
+{
+    data
+     = ((( 0.94382 0.0561798 0 )	%  Error=Success  Scenario=S1
+	 ( 1 0 0 )	%  Error=Success  Scenario=S2
+	 ( 0.0909091 0.181818 0.727273 ))	%  Error=Success  Scenario=S3
+	(( 1 0 0 )	%  Error=Failure  Scenario=S1
+	 ( 0.866667 0.133333 0 )	%  Error=Failure  Scenario=S2
+	 ( 0.75 0.233333 0.0166667 )));	%  Error=Failure  Scenario=S3
+    experience
+     = (( 89	%  Error=Success  Scenario=S1
+	  74	%  Error=Success  Scenario=S2
+	  33 )	%  Error=Success  Scenario=S3
+	( 1	%  Error=Failure  Scenario=S1
+	  15	%  Error=Failure  Scenario=S2
+	  60 ));	%  Error=Failure  Scenario=S3
+}
+
+potential (No_of_alarms | Error Scenario)
+{
+    data
+     = ((( 1 0 )	%  Error=Success  Scenario=S1
+	 ( 0.986486 0.0135135 )	%  Error=Success  Scenario=S2
+	 ( 0.545455 0.454545 ))	%  Error=Success  Scenario=S3
+	(( 0 1 )	%  Error=Failure  Scenario=S1
+	 ( 0.933333 0.0666667 )	%  Error=Failure  Scenario=S2
+	 ( 0 1 )));	%  Error=Failure  Scenario=S3
+    experience
+     = (( 89	%  Error=Success  Scenario=S1
+	  74	%  Error=Success  Scenario=S2
+	  33 )	%  Error=Success  Scenario=S3
+	( 1	%  Error=Failure  Scenario=S1
+	  15	%  Error=Failure  Scenario=S2
+	  60 ));	%  Error=Failure  Scenario=S3
+}
+
+potential (mimics_opened | Error Scenario)
+{
+    data
+     = ((( 0.640449 0.359551 )	%  Error=Success  Scenario=S1
+	 ( 0.635135 0.364865 )	%  Error=Success  Scenario=S2
+	 ( 0.121212 0.878788 ))	%  Error=Success  Scenario=S3
+	(( 0 1 )	%  Error=Failure  Scenario=S1
+	 ( 0.533333 0.466667 )	%  Error=Failure  Scenario=S2
+	 ( 0.116667 0.883333 )));	%  Error=Failure  Scenario=S3
+    experience
+     = (( 89	%  Error=Success  Scenario=S1
+	  74	%  Error=Success  Scenario=S2
+	  33 )	%  Error=Success  Scenario=S3
+	( 1	%  Error=Failure  Scenario=S1
+	  15	%  Error=Failure  Scenario=S2
+	  60 ));	%  Error=Failure  Scenario=S3
+}
+
+potential (Group | Error Acknowledgements)
+{
+    data
+     = ((( 0.219101 0.230337 0.292135 0.258427 )	%  Error=Success  Acknowledgements=interval(-infinity,3.5)
+	 ( 0.111111 0.555556 0.111111 0.222222 ))	%  Error=Success  Acknowledgements=interval(3.5,infinity)
+	(( 0.475 0.175 0.225 0.125 )	%  Error=Failure  Acknowledgements=interval(-infinity,3.5)
+	 ( 0.194444 0.222222 0.166667 0.416667 )));	%  Error=Failure  Acknowledgements=interval(3.5,infinity)
+    experience
+     = (( 178	%  Error=Success  Acknowledgements=interval(-infinity,3.5)
+	  18 )	%  Error=Success  Acknowledgements=interval(3.5,infinity)
+	( 40	%  Error=Failure  Acknowledgements=interval(-infinity,3.5)
+	  36 ));	%  Error=Failure  Acknowledgements=interval(3.5,infinity)
+}
